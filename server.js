@@ -73,7 +73,6 @@ app.get('/download/:filename', (req, res) => {
     });
 });
 
-
 // 파일 삭제 엔드포인트
 app.delete('/delete/:filename', (req, res) => {
     const filename = req.params.filename;
@@ -88,14 +87,22 @@ app.delete('/delete/:filename', (req, res) => {
     });
 });
 
-// 업로드된 파일 목록 제공 엔드포인트
+// 업로드된 파일 목록 제공 엔드포인트 (최신 파일이 상단에 오도록 정렬)
 app.get('/uploads', (req, res) => {
     fs.readdir(uploadDir, (err, files) => {
         if (err) {
             console.error('ReadDir Error:', err);
             return res.status(500).json({ message: "Failed to list files" });
         }
-        res.json(files);
+
+        // 파일명에서 날짜를 추출해 최신 순으로 정렬
+        const sortedFiles = files.sort((a, b) => {
+            const dateA = new Date(a.split('-').slice(0, 3).join('-'));
+            const dateB = new Date(b.split('-').slice(0, 3).join('-'));
+            return dateB - dateA; // 최신 파일이 상단으로 오게 정렬
+        });
+
+        res.json(sortedFiles); // 정렬된 파일 목록 반환
     });
 });
 
