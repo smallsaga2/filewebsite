@@ -5,7 +5,7 @@ const fs = require('fs');
 
 // 서버 설정
 const app = express();
-const PORT = 3000;
+const PORT = 80;
 
 // 업로드 디렉토리 설정
 const uploadDir = path.join(__dirname, 'uploads');
