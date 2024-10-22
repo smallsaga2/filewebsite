@@ -5,3 +5,6 @@ To host this file-sharing site on your Windows machine, you first need to instal
 3. In Visual Studio Code, navigate to the location where server.js is located, and in the terminal (as explained in steps 2 and 2.1), run the command npm install express multer, then execute the command node server.js to start the server.
 
 Note: Always start the server using commands in the Visual Studio Code terminal. While it may run if executed via a shortcut, the site won’t be accessible.
+
+*add*
+I may not need port forwarding because I have my computer's LAN cable directly connected to a splitter that receives optical LAN at home. However, just in case, try accessing the hosting from a different internet than your home internet. If that doesn't work, try port forwarding.
