@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const previewPopup = document.getElementById("previewPopup");
   const popupMedia = document.getElementById("popupMedia");
   const closePopup = document.getElementById("closePopup");
-  //왜 있는지 모르겠음 암튼 삭제 기능능
+  //왜 있는지 모르겠음 암튼 삭제 기능
   const deleteModal = document.getElementById("deleteModal");
   const confirmDelete = document.getElementById("confirmDelete");
   const cancelDelete = document.getElementById("cancelDelete");

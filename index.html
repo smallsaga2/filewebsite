@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파일 관리 시스템</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 헤더 -->
+  <div class="header">
+    <h1>파일 관리 시스템</h1>
+  </div>
+
+  <!-- 파일 업로드 -->
+  <form id="uploadForm">
+    <div id="dropZone" class="drop-zone">
+      <p>파일을 여기에 드래그하거나 클릭하여 업로드하세요.</p>
+    </div>
+    <input type="file" id="fileInput" style="display: none;" multiple>
+  </form>
+
+  <!-- 알림 -->
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <!-- 파일 카테고리 -->
+  <main>
+    <section>
+      <h2>📹 영상</h2>
+      <div id="videoList" class="file-list"></div>
+    </section>
+    <section>
+      <h2>🎵 음악</h2>
+      <div id="audioList" class="file-list"></div>
+    </section>
+    <section>
+      <h2>🖼️ 사진</h2>
+      <div id="imageList" class="file-list"></div>
+    </section>
+    <section>
+      <h2>📁 기타 파일</h2>
+      <div id="otherList" class="file-list"></div>
+    </section>
+  </main>
+
+  <!-- 팝업 -->
+  <div id="previewPopup" class="popup hidden">
+    <div class="popup-content">
+      <span id="closePopup" class="close">&times;</span>
+      <h3 id="popupFileName" class="popup-file-name"></h3>
+      <div id="popupMedia"></div>
+    </div>
+  </div>
+
+<!-- 업로드 로드 바 컨테이너 -->
+<div id="uploadProgressContainer" class="progress-container hidden">
+  <div id="uploadProgressBar" class="progress-bar"></div>
+</div>
+
+
+  <!-- 삭제 모달 -->
+  <div id="deleteModal" class="modal hidden">
+    <div class="modal-content">
+      <p>파일을 삭제하시겠습니까?</p>
+      <div class="modal-actions">
+        <button id="confirmDelete" class="confirm-btn">네</button>
+        <button id="cancelDelete" class="cancel-btn">아니오</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

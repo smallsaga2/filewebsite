@@ -1,114 +1,69 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 
-// 서버 설정
 const app = express();
 const PORT = 80;
 
-// 업로드 디렉토리 설정
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-// 파일 저장 방식 설정
+// 업로드 폴더 경로 설정
+const uploadFolder = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder);
+
+// 파일 업로드를 처리하는 multer 설정
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-        const dateStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD 형식의 날짜
-        const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8'); // 한글 파일명 처리
-        cb(null, `${dateStr}-${originalName}`);
+  destination: (req, file, cb) => cb(null, uploadFolder),
+  filename: (req, file, cb) => cb(null, `${Date.now()}_${file.originalname}`),
+});
+const upload = multer({ storage });
+
+// 정적 경로 설정
+app.use("/uploads", express.static(uploadFolder));
+app.use(express.static(path.join(__dirname, "public")));
+
+// 파일 업로드 API
+app.post("/api/upload", upload.array("file"), (req, res) => {
+  if (req.files && req.files.length > 0) {
+    res.status(200).json({ message: "파일 업로드 성공" });
+  } else {
+    res.status(400).json({ message: "파일 업로드 실패" });
+  }
+});
+
+// 파일 목록 반환 API
+app.get("/api/files", (req, res) => {
+  fs.readdir(uploadFolder, (err, files) => {
+    if (err) {
+      return res.status(500).json({ message: "파일 목록을 불러올 수 없습니다." });
     }
+
+    const fileList = files.map((file) => ({
+      name: file,
+      url: `/uploads/${file}`,
+      extension: path.extname(file).toLowerCase(),
+    }));
+    res.json(fileList);
+  });
 });
 
-const upload = multer({ storage: storage });
+// 파일 삭제 API
+app.delete("/api/files/:name", (req, res) => {
+  const fileName = req.params.name;
+  const filePath = path.join(uploadFolder, fileName);
 
-// 정적 파일 서빙
-app.use(express.static('public'));
-
-// 파일 업로드 엔드포인트
-app.post('/upload', upload.single('file'), (req, res) => {
-    try {
-        const uploadedFile = req.file;
-        if (!uploadedFile) {
-            return res.status(400).send('No file uploaded.');
-        }
-
-        // 서버에 업로드 완료 로그
-        console.log(`File uploaded: ${uploadedFile.filename}`);
-
-        res.send(`File uploaded: ${uploadedFile.filename}`);
-    } catch (error) {
-        console.error('Upload Error:', error);
-        res.status(500).send('Internal Server Error');
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      return res.status(500).json({ message: "파일 삭제 실패" });
     }
+    res.status(200).json({ message: "파일 삭제 성공" });
+  });
 });
 
-// 파일 다운로드 엔드포인트
-app.get('/download/:filename', (req, res) => {
-    const filename = req.params.filename;
-    const filePath = path.join(uploadDir, filename);
-    const utf8Filename = Buffer.from(filename, 'latin1').toString('utf8'); // 한글 파일명 처리
-
-    // 다운로드 시 UTF-8로 파일명 설정
-    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(utf8Filename)}`);
-    res.download(filePath, utf8Filename, (err) => {
-        if (err) {
-            if (res.headersSent) {
-                console.error('Headers already sent. Error occurred during download:', err);
-                return; // 이미 헤더가 전송된 경우 추가로 응답하지 않음
-            }
-
-            if (err.code === 'ECONNABORTED') {
-                console.warn('Download aborted by client:', err);
-            } else {
-                console.error('Download Error:', err);
-                res.status(500).send(`Error downloading file: ${filename}`);
-            }
-        }
-    });
-});
-
-// 파일 삭제 엔드포인트
-app.delete('/delete/:filename', (req, res) => {
-    const filename = req.params.filename;
-    const filePath = path.join(uploadDir, filename);
-
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            console.error('Delete Error:', err);
-            return res.status(404).send(`File not found: ${filename}`);
-        }
-        res.sendStatus(200); // 성공적으로 삭제된 경우 200 응답
-    });
-});
-
-// 업로드된 파일 목록 제공 엔드포인트 (최신 파일이 상단에 오도록 정렬)
-app.get('/uploads', (req, res) => {
-    fs.readdir(uploadDir, (err, files) => {
-        if (err) {
-            console.error('ReadDir Error:', err);
-            return res.status(500).json({ message: "Failed to list files" });
-        }
-
-        // 파일명에서 날짜를 추출해 최신 순으로 정렬
-        const sortedFiles = files.sort((a, b) => {
-            const dateA = new Date(a.split('-').slice(0, 3).join('-'));
-            const dateB = new Date(b.split('-').slice(0, 3).join('-'));
-            return dateB - dateA; // 최신 파일이 상단으로 오게 정렬
-        });
-
-        res.json(sortedFiles); // 정렬된 파일 목록 반환
-    });
-});
-
-// 서버 시작
+// 서버 실행
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-}).on('error', (err) => {
-    console.error('Failed to start server:', err);
+  console.log(`서버 실행 중: http://localhost:${PORT}`);
 });
