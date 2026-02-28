@@ -14,6 +14,46 @@ app.get('/', (req, res) => {
 const uploadFolder = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder);
 
+// 접속 로그 미들웨어 (콘솔에 출력)
+app.use((req, res, next) => {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const userAgent = req.headers['user-agent'];
+  const timestamp = new Date().toLocaleString();
+  const path = req.path;
+
+  // 모든 요청을 콘솔에 기록 (정적 파일 제외하고 싶으면 필터링 가능)
+  if (path === '/' || path.startsWith('/api')) {
+    console.log(`[${timestamp}] 접속: ${ip} | ${req.method} ${path} | ${userAgent}`);
+  }
+
+  // 업로드 진행률 로그 (업로드 API 호출 시)
+  if (path === '/api/upload' && req.method === 'POST') {
+    const totalSize = parseInt(req.headers['content-length'], 10);
+    let uploadedSize = 0;
+    let lastLoggedPercent = -1;
+
+    console.log(`[${timestamp}] 업로드 시작: ${totalSize} bytes`);
+
+    req.on('data', (chunk) => {
+      uploadedSize += chunk.length;
+      const progress = ((uploadedSize / totalSize) * 100);
+      const currentPercent = Math.floor(progress);
+
+      // 5% 단위로만 로그 출력하거나 실시간 한 줄 출력
+      if (currentPercent % 5 === 0 && currentPercent !== lastLoggedPercent) {
+        process.stdout.write(`\r업로드 진행 중: ${currentPercent}% (${uploadedSize}/${totalSize} bytes)`);
+        lastLoggedPercent = currentPercent;
+      }
+    });
+
+    req.on('end', () => {
+      process.stdout.write(`\r업로드 완료: 100% (${totalSize}/${totalSize} bytes)\n`);
+    });
+  }
+  
+  next();
+});
+
 // 파일 업로드를 처리하는 multer 설정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadFolder),
@@ -41,11 +81,17 @@ app.get("/api/files", (req, res) => {
       return res.status(500).json({ message: "파일 목록을 불러올 수 없습니다." });
     }
 
-    const fileList = files.map((file) => ({
-      name: file,
-      url: `/uploads/${file}`,
-      extension: path.extname(file).toLowerCase(),
-    }));
+    const fileList = files.map((file) => {
+      const filePath = path.join(uploadFolder, file);
+      const stats = fs.statSync(filePath);
+      return {
+        name: file,
+        url: `/uploads/${file}`,
+        extension: path.extname(file).toLowerCase(),
+        size: stats.size,
+        mtime: stats.mtime
+      };
+    });
     res.json(fileList);
   });
 });
