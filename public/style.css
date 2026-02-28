@@ -1,275 +1,273 @@
 /* 글로벌 기본 스타일 */
+:root {
+  --primary-color: #4caf50;
+  --bg-color: #f4f7f6;
+  --card-bg: #ffffff;
+  --text-main: #333;
+  --text-muted: #888;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  margin: 0;
+  padding: 0;
+  color: var(--text-main);
+}
+
+/* 헤더 */
+.header {
+  background-color: var(--card-bg);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+h1 { margin: 0; font-size: 1.8rem; color: #2c3e50; }
+
+/* 검색 섹션 */
+.search-section {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  box-shadow: var(--shadow);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: var(--primary-color);
+}
+
+/* 드래그 앤 드롭 */
+.drop-zone {
+  max-width: 800px;
+  height: 120px;
+  margin: 0 auto 30px;
+  border: 2px dashed #bbb;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  color: #777;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.drop-zone:hover, .drop-zone.hover {
+  background-color: #e8f5e9;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* 파일 그리드 레이아웃 */
+.file-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 50px;
+}
+
+.category-section {
+  margin-bottom: 40px;
+}
+
+.category-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  border-left: 5px solid var(--primary-color);
+  padding-left: 10px;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+/* 파일 카드 */
+.file-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* 썸네일 영역 */
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.thumbnail img, .thumbnail video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.audio-thumb, .other-thumb {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.thumbnail .icon {
+  font-size: 3rem;
+}
+
+/* 파일 정보 */
+.file-info {
+  padding: 12px;
+  flex-grow: 1;
+}
+
+.file-name {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.file-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 액션 버튼 */
+.actions {
+  display: flex;
+  padding: 8px;
+  gap: 5px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+.actions button, .actions a {
+  flex: 1;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.delete-btn { background-color: #ffeff0; color: #e74c3c; }
+.delete-btn:hover { background-color: #ffdce0; }
+
+.download-btn { background-color: #e3f2fd; color: #1976d2; }
+.download-btn:hover { background-color: #bbdefb; }
+
+/* 팝업/모달 */
+.popup {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  display: none;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup.visible { display: flex; }
+
+.popup-content {
+  background: #fff;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 15px;
+  position: relative;
+  padding: 40px 20px 20px;
+}
+
+.close {
+  position: absolute;
+  top: 10px; right: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+#popupMedia video, #popupMedia img {
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 8px;
+}
+
+/* 프로그래스 바 */
+.progress-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 5px;
+  background: transparent;
+  z-index: 3000;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  width: 0%;
+  transition: width 0.3s;
+}
+
+/* 알림 */
+.notification-container {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 4000;
+}
+
+.notification {
+  background-color: #333;
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: var(--shadow);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.hidden { display: none; }
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .file-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
   }
-  
-  h1 {
-    font-size: 24px;
-    color: #333;
-    margin: 0;
-  }
-  
-  .file-category h2 {
-    font-size: 20px;
-  }
-  
-  .total-size {
-    text-align: right;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  /* 드래그 앤 드롭 스타일 */
-  .drop-zone {
-    width: 80%;
-    max-width: 500px;
-    height: 150px;
-    margin: 20px auto;
-    border: 2px dashed #aaa;
-    border-radius: 10px;
-    text-align: center;
-    color: #666;
-    padding: 20px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-  }
-  
-  .drop-zone.hover {
-    background-color: #e0ffe0;
-    border-color: #4caf50;
-  }
-  
-  /* 파일 목록 스타일 */
-  .file-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .file-item {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border-radius: 5px;
-    overflow: hidden;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  
-  .file-item img,
-  .file-item video,
-  .file-item audio {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  }
-  
-  .file-item:hover {
-    transform: scale(1.05);
-  }
-  
-  /* 오버레이 */
-  /* 모달 오버레이 */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
-    display: none; /* 기본적으로 숨김 */
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal.visible {
-    display: flex; /* 보이도록 설정 */
-  }
-  
-  /* 모달 콘텐츠 */
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-  
-  .modal-actions button {
-    padding: 10px 20px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .modal-actions .confirm-btn {
-    background-color: #e74c3c; /* 삭제 버튼: 빨간색 */
-    color: white;
-  }
-  
-  .modal-actions .cancel-btn {
-    background-color: #007bff; /* 취소 버튼: 파란색 */
-    color: white;
-  }
-  
-  .modal-actions button:hover {
-    opacity: 0.9;
-  }
-  
-  /* 알림창 */
-  .notification-container {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 10px;
-    z-index: 1001; /* 알람 레이어가 가장 위 */
-  }
-  
-  .notification {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    opacity: 1; /* 표출 상태 */
-    transform: translateX(0);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  
-  /* 알림 사라짐 애니메이션 */
-  .notification.hidden {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  
-  /* 드래그 앤 드롭 스타일 */
-  .drop-zone {
-    width: 80%;
-    max-width: 500px;
-    height: 150px;
-    margin: 20px auto;
-    border: 2px dashed #aaa;
-    border-radius: 10px;
-    text-align: center;
-    color: #666;
-    padding: 20px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-  }
-  
-  .drop-zone.hover {
-    background-color: #e0ffe0; /* 드래그 중일 때 강조 */
-    border-color: #4caf50;
-  }
-  
-  
-  /* 삭제/다운로드 버튼 */
-  .actions {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    display: none;
-    gap: 5px;
-    justify-content: space-around;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 5px;
-    border-radius: 5px;
-  }
-  
-  .file-item:hover .actions {
-    display: flex;
-  }
-  
-  .actions a,
-  .actions button {
-    color: white;
-    background-color: #007bff;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 3px;
-  }
-  
-  .actions button:hover,
-  .actions a:hover {
-    background-color: #0056b3;
-  }
-  
-  /* 업로드 로드 바 컨테이너 */
-  .progress-container {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    max-width: 500px;
-    height: 10px;
-    background-color: #f3f3f3;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-  }
-  
-  /* 업로드 로드 바 */
-  .progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #4caf50;
-    transition: width 0.2s ease;
-  }
-  
-  /* 컨테이너 초기 숨김 상태 */
-  .hidden {
-    display: none;
-  }
-  
-  
-  /* 팝업 스타일 */
-  .popup {
-    position: fixed;
-    top: 50%; /* 화면 중앙에 위치 */
-    left: 50%; /* 화면 중앙에 위치 */
-    transform: translate(-50%, -50%); /* 완벽한 중앙 정렬 */
-    width: 80%;
-    max-width: 600px;
-    max-height: 80%; /* 화면에 넘치지 않도록 */
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    z-index: 1000; /* 화면 위쪽에 표시되도록 */
-    display: none; /* 기본적으로 숨김 */
-    overflow: auto; /* 내부 콘텐츠 스크롤 가능 */
-  }
-  
-  .popup.visible {
-    display: block; /* 팝업을 표시 */
-  }
-  
-  .popup img,
-  .popup video,
-  .popup audio {
-    max-width: 100%; /* 팝업 안에서 콘텐츠 크기 제한 */
-    max-height: 300px; /* 너무 큰 경우 제한 */
-    display: block;
-    margin: 0 auto;
-  }
-  
+  .file-name { font-size: 0.85rem; }
+  h1 { font-size: 1.4rem; }
+}
