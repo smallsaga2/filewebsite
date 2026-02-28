@@ -20,26 +20,31 @@
     <input type="file" id="fileInput" style="display: none;" multiple>
   </form>
 
+  <!-- 검색 바 -->
+  <section class="search-section">
+    <input type="text" id="searchInput" placeholder="파일 이름을 검색하세요..." class="search-input">
+  </section>
+
   <!-- 알림 -->
   <div id="notificationContainer" class="notification-container"></div>
 
   <!-- 파일 카테고리 -->
-  <main>
-    <section>
+  <main class="file-container">
+    <section class="category-section">
       <h2>📹 영상</h2>
-      <div id="videoList" class="file-list"></div>
+      <div id="videoList" class="file-grid"></div>
     </section>
-    <section>
+    <section class="category-section">
       <h2>🎵 음악</h2>
-      <div id="audioList" class="file-list"></div>
+      <div id="audioList" class="file-grid"></div>
     </section>
-    <section>
+    <section class="category-section">
       <h2>🖼️ 사진</h2>
-      <div id="imageList" class="file-list"></div>
+      <div id="imageList" class="file-grid"></div>
     </section>
-    <section>
+    <section class="category-section">
       <h2>📁 기타 파일</h2>
-      <div id="otherList" class="file-list"></div>
+      <div id="otherList" class="file-grid"></div>
     </section>
   </main>
 
